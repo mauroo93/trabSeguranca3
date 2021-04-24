@@ -31,7 +31,7 @@ public class DigestCalculator {
         File arqListaArq = new File (pathPastaArquivos);
         
         fileToMap(arqListaDgst);
-        calcDigest(arqListaArq, tipoDgst);
+        calcDigest(arqListaDgst, arqListaArq, tipoDgst);
         
     }
     
@@ -51,11 +51,30 @@ public class DigestCalculator {
     	}	
     }
     
-    public static void calcDigest(File arqListaArq, String tipoDgst) throws Exception {
+    public static void mapToFile(File f) throws FileNotFoundException, IOException {
+    	FileWriter fw = new FileWriter(f);
+    	
+    	for (String i : dgstMap.keySet()) {
+    		String line="";
+    		line+=i;
+    		line+=" ";
+  		  for(Calculated i1 : dgstMap.get(i)) {
+  			  line+=i1.getType();
+  			  line+=" ";
+  			  line+=i1.getHex();
+  			  line+=" ";
+  		  }
+  		  	line+="\n";
+  			fw.write(line);
+  		}
+    	fw.close();
+    }
+    
+    public static void calcDigest(File pathListaDgst, File arqListaArq, String tipoDgst) throws Exception {
     	try{
             MessageDigest algoritm = MessageDigest.getInstance(tipoDgst);
             File[] arqs = arqListaArq.listFiles();
-            
+            boolean flag = false;
             
             for (int i =0;i<arqs.length;i++){
             	InputStream fis =  new FileInputStream(arqs[i]);
@@ -76,14 +95,23 @@ public class DigestCalculator {
                 }
                 String fileName = arqs[i].getName();
                 Calculated c = new Calculated(tipoDgst, calculatedDigest);
-                
+                String s = status(fileName, c);
+                System.out.println(fileName + " " + tipoDgst + " " + calculatedDigest + " " + s);
+                if(s.compareTo("NOT FOUND")==0) {
+                	ArrayList<Calculated> lc = new ArrayList<>();
+                	lc.add(c);
+                	dgstMap.put(fileName, lc);
+                	flag = true;
+                }
                 
                 /*FileWriter myWriter = new FileWriter(pathListaDgst, true);
                 myWriter.write(arqs[i].getName()+" "+tipoDgst+" "+calculatedDigest +"\n");
                 myWriter.close();*/
                
             }
-            status("a", null);
+            if(flag) {
+            	mapToFile(pathListaDgst);
+            }
         }catch(Exception  algErr){
             //TODO tratamento de erro
             System.out.print("Problema do tipo \t"+algErr);
@@ -91,14 +119,43 @@ public class DigestCalculator {
         }
     }
     
-    public static void status(String name, Calculated c) {
+    public static String status(String name, Calculated c) {
+    	//testa colisão
     	for (String i : dgstMap.keySet()) {
-    		//dgstMap.get(i).clear();
-    		  System.out.println(i);
     		  for(Calculated i1 : dgstMap.get(i)) {
-    			  System.out.println(i1.getHex());
+    			  if(i1.getHex().compareTo(c.getHex())==0) {
+    				  if(i.compareTo(name)!=0) {
+    					  //System.out.println("OK" + i1.getHex()+c.getHex());
+    					  return "COLISION";
+    				  }
+    			  }
     		  }
     		}
+    	//testa OK
+    	for (String i : dgstMap.keySet()) {
+    		  for(Calculated i1 : dgstMap.get(i)) {
+    			  if(i1.getHex().compareTo(c.getHex())==0) {
+    				  if(i.compareTo(name)==0) {
+    					  //System.out.println("OK" + i1.getHex()+c.getHex());
+    					  return "OK";
+    				  }
+    			  }
+    		  }
+    		}
+    	//testa não OK
+    	for (String i : dgstMap.keySet()) {
+    		if(i.compareTo(name)==0) {
+    			for(Calculated i1 : dgstMap.get(i)) {
+    				if(i1.getType().compareTo(c.getType())==0 && i1.getHex().compareTo(c.getHex())!=0) {
+    					//System.out.println("NOT OK" + i1.getHex()+c.getHex());
+    					return "NOT OK";
+    				}
+    			}
+    		}
+    	}
+    	//System.out.println("NOT FOUND"+name);
+    	return "NOT FOUND";
+    	
     }
     
 }
