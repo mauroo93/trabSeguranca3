@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.io.*;
+import java.util.Scanner;
 
 
 
@@ -27,14 +28,62 @@ public class DigestCalculator {
                 pathPastaArquivos = args[i];
             } 
         }
+		while(!fileCheck(pathListaDgst)){
+			System.out.println("Nome do arquivo digest invalido,digite outro:");
+			Scanner teclado = new Scanner(System.in);
+			pathListaDgst=teclado.nextLine();
+			
+		}
         File arqListaDgst = new File(pathListaDgst);
+		while(!directoryCheck(pathPastaArquivos)){
+			System.out.println("Nome da pasta de arquivos invalido,digite outro:");
+			Scanner teclado = new Scanner(System.in);
+			pathPastaArquivos=teclado.nextLine();
+			System.out.println(pathPastaArquivos);
+		}
+		while(!algCheck(tipoDgst)){
+			System.out.println("Algoritmo invalido,digite outro:");
+			Scanner teclado = new Scanner(System.in);
+			tipoDgst=teclado.nextLine();
+			System.out.println(tipoDgst);
+		}
         File arqListaArq = new File (pathPastaArquivos);
         
         fileToMap(arqListaDgst);
         calcDigest(arqListaDgst, arqListaArq, tipoDgst);
         
     }
-    
+    public static boolean fileCheck(String path) throws FileNotFoundException{
+		try{
+			File f =new File(path);
+			System.out.println("File check "+path);
+			if (f.exists())
+				return true;
+			return false;
+		}catch(Exception e ){
+			return false;
+		}
+	}
+	public static boolean directoryCheck(String path) throws FileNotFoundException{
+		try{
+			File f =new File(path);
+			System.out.println("Directory check "+path);
+			if (f.isDirectory())
+				return true;
+			return false;
+		}catch(Exception e ){
+			return false;
+		}
+	}
+	public static boolean algCheck(String alg) throws NoSuchAlgorithmException{
+		try{
+			MessageDigest algoritm = MessageDigest.getInstance(alg);
+			System.out.println("Alg Check "+alg);
+		}catch(Exception e){
+			return false;
+		}
+		return true;
+	}
     public static void fileToMap(File f) throws FileNotFoundException, IOException {
     	try (BufferedReader br = new BufferedReader(new FileReader(f))) {
     	    String line;
@@ -48,7 +97,10 @@ public class DigestCalculator {
     	    	}
     	    	dgstMap.put(fileName, lc);
        	    }
-    	}	
+    	}catch(Exception  algErr){
+            System.out.print("Problema do tipo \t"+algErr);
+            throw algErr;
+        }	
     }
     
     public static void mapToFile(File f) throws FileNotFoundException, IOException {
@@ -120,14 +172,13 @@ public class DigestCalculator {
             	mapToFile(pathListaDgst);
             }
         }catch(Exception  algErr){
-            //TODO tratamento de erro
             System.out.print("Problema do tipo \t"+algErr);
             throw algErr;
         }
     }
     
     public static String status(String name, Calculated c) {
-    	//testa colisão
+    	//testa colisï¿½o
     	for (String i : dgstMap.keySet()) {
     		  for(Calculated i1 : dgstMap.get(i)) {
     			  if(i1.getHex().compareTo(c.getHex())==0) {
@@ -149,7 +200,7 @@ public class DigestCalculator {
     			  }
     		  }
     		}
-    	//testa não OK
+    	//testa nï¿½o OK
     	for (String i : dgstMap.keySet()) {
     		if(i.compareTo(name)==0) {
     			for(Calculated i1 : dgstMap.get(i)) {
