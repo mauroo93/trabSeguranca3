@@ -99,6 +99,13 @@ public class DigestCalculator {
                 System.out.println(fileName + " " + tipoDgst + " " + calculatedDigest + " " + s);
                 if(s.compareTo("NOT FOUND")==0) {
                 	ArrayList<Calculated> lc = new ArrayList<>();
+                	for (String i1 : dgstMap.keySet()) {
+                		if(i1.compareTo(fileName)==0) {
+                			for(Calculated i2 : dgstMap.get(i1)) {
+                				lc.add(new Calculated(i2.getType(), i2.getHex()));
+                			}
+                		}
+                	}
                 	lc.add(c);
                 	dgstMap.put(fileName, lc);
                 	flag = true;
