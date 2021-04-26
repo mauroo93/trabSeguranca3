@@ -29,14 +29,14 @@ public class DigestCalculator {
             } 
         }
 		while(!fileCheck(pathListaDgst)){
-			System.out.println("Nome do arquivo digest invalido,digite outro:");
+			System.out.println("Path do arquivo digest invalido,digite outro:");
 			Scanner teclado = new Scanner(System.in);
 			pathListaDgst=teclado.nextLine();
 			
 		}
         File arqListaDgst = new File(pathListaDgst);
 		while(!directoryCheck(pathPastaArquivos)){
-			System.out.println("Nome da pasta de arquivos invalido,digite outro:");
+			System.out.println("Path da pasta de arquivos invalido,digite outro:");
 			Scanner teclado = new Scanner(System.in);
 			pathPastaArquivos=teclado.nextLine();
 			System.out.println(pathPastaArquivos);
@@ -56,7 +56,7 @@ public class DigestCalculator {
     public static boolean fileCheck(String path) throws FileNotFoundException{
 		try{
 			File f =new File(path);
-			System.out.println("File check "+path);
+			//System.out.println("File check "+path);
 			if (f.exists())
 				return true;
 			return false;
@@ -67,7 +67,7 @@ public class DigestCalculator {
 	public static boolean directoryCheck(String path) throws FileNotFoundException{
 		try{
 			File f =new File(path);
-			System.out.println("Directory check "+path);
+			//System.out.println("Directory check "+path);
 			if (f.isDirectory())
 				return true;
 			return false;
@@ -78,7 +78,7 @@ public class DigestCalculator {
 	public static boolean algCheck(String alg) throws NoSuchAlgorithmException{
 		try{
 			MessageDigest algoritm = MessageDigest.getInstance(alg);
-			System.out.println("Alg Check "+alg);
+			//System.out.println("Alg Check "+alg);
 		}catch(Exception e){
 			return false;
 		}
