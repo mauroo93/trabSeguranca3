@@ -28,24 +28,22 @@ public class DigestCalculator {
                 pathPastaArquivos = args[i];
             } 
         }
-		while(!fileCheck(pathListaDgst)){
-			System.out.println("Path do arquivo digest invalido,digite outro:");
-			Scanner teclado = new Scanner(System.in);
-			pathListaDgst=teclado.nextLine();
+		if(!fileCheck(pathListaDgst)){
+			System.out.println("Path do arquivo digest invalido");
+			System.out.println("O formato aceitado e ALGORITMO PATH_ARQUIVO_DIGEST PATH_PASTA_ARQUIVOS");
+			System.exit(0);
 			
 		}
         File arqListaDgst = new File(pathListaDgst);
-		while(!directoryCheck(pathPastaArquivos)){
-			System.out.println("Path da pasta de arquivos invalido,digite outro:");
-			Scanner teclado = new Scanner(System.in);
-			pathPastaArquivos=teclado.nextLine();
-			System.out.println(pathPastaArquivos);
+		if(!directoryCheck(pathPastaArquivos)){
+			System.out.println("Path da pasta de arquivos invalido");
+			System.out.println("O formato aceitado e ALGORITMO PATH_ARQUIVO_DIGEST PATH_PASTA_ARQUIVOS");
+			System.exit(0);
 		}
-		while(!algCheck(tipoDgst)){
-			System.out.println("Algoritmo invalido,digite outro:");
-			Scanner teclado = new Scanner(System.in);
-			tipoDgst=teclado.nextLine();
-			System.out.println(tipoDgst);
+		if(!algCheck(tipoDgst)){
+			System.out.println("Algoritmo invalido");
+			System.out.println("O formato aceitado e ALGORITMO PATH_ARQUIVO_DIGEST PATH_PASTA_ARQUIVOS");
+			System.exit(0);
 		}
         File arqListaArq = new File (pathPastaArquivos);
         
